@@ -6,8 +6,14 @@ def cli():
     pass
 
 @cli.command(name="create-user")
-def create_user_cmd():
-    create_user()  # Replace with the actual function you want to call
+@click.argument('owner')
+@click.argument('repo')
+@click.argument('contributor_id')
+@click.argument('contributor_name')
+@click.argument('contributor_signature')
+@click.argument('token')
+def create_user_cmd(owner, repo, contributor_id, contributor_name, contributor_signature, token):
+    create_user(owner, repo, contributor_id, contributor_name, contributor_signature, token)
 
 def main():
     cli()
