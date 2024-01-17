@@ -12,8 +12,6 @@ from tsrc_cli.lib.create_user import create_user
 def test_create_user_success():
     # Example parameters for the test
     test_params = {
-        'owner': 'test_owner',
-        'repo': 'test_repo',
         'contributor_id': 'test_id',
         'contributor_name': 'test_name',
         'contributor_signature': 'test_signature',
@@ -26,7 +24,13 @@ def test_create_user_success():
     # Assertions
     assert response.status_code == 200
     assert 'createUser' in response.json()['data']
-    assert response.json()['data']['createUser'] == '201'
+    assert response.json()['data']['createUser'] == {
+        'message': 'User created successfully', 'status': 'success',
+        'info': {
+            'contributor_id': 'test_id',
+            'contributor_name': 'test_name'
+        }
+    }
 
 
 #@patch('requests.post')
