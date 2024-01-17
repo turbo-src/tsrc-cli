@@ -1,51 +1,32 @@
+# tsrc-cli
+
+
+### Install
+
+Clone.
 
 ```
-git clone ...
+git clone --recurse-submodules https://github.com/turbo-src/turbo-src.git
 ```
 
-Install
+In the `turbo-src/tsrc-cli` directory.
 
 ```
 poetry install
 ```
 
-Experimental create user
+Initialize and start turbosrc in the `turbo-src` root directory per `turbo-src/README.md`.
+
+### Commands
+
+Create user
 
 ```
-python experiments/create_user.py
+poetry run tsrc-cli create-user <contributor-id> <contributor-name> <contributor-signature> <github-token>
 ```
 
-## Enpoints
-
-### create user
-
-
-status code: 201
-
+### tests
 
 ```
-{'data': {'createUser': '201'}}
-```
-
-If user already created.
-
-status code: 200
-
-
-```
-{'data': {'createUser': 'There was an error: SequelizeUniqueConstraintError: Validation error'}}
-```
-
-#### Ideal
-
-```
-{
-    "status": "success",
-    "message": "User created successfully",
-    "info": {
-        "contributor_id": "12345",
-        "contriburor_name": "new_user",
-        "codehosts: "github"
-    }
-}
+pytest
 ```
