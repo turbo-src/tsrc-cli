@@ -2,20 +2,16 @@ import requests
 import json
 from typing import Any, Dict
 
-CONFIG = {'url': 'http://localhost:4000/graphql/"'}  # Replace with your actual configuration
+CONFIG = {'url': 'http://localhost:4000/graphql/'}  # Corrected URL
 
-def create_user(contributor_id: str,
-                     contributor_name: str,
-                     contributor_signature: str,
-                     token: str) -> Dict[str, Any]:
+def create_user(contributor_id: str, contributor_name: str, contributor_password: str) -> Dict[str, Any]:
     """
     Makes a POST request to create a user.
 
     Args:
         contributor_id (str): The ID of the contributor.
         contributor_name (str): The name of the contributor.
-        contributor_signature (str): The signature of the contributor.
-        token (str): The authentication token.
+        contributor_password (str): The password of the contributor.
 
     Returns:
         Dict[str, Any]: The JSON response from the server.
@@ -25,7 +21,7 @@ def create_user(contributor_id: str,
     query = {
         'query': f'''
         {{
-            createUser(contributor_id: "{contributor_id}", contributor_name: "{contributor_name}", contributor_signature: "{contributor_signature}", token: "{token}") {{
+            createUser(contributor_id: "{contributor_id}", contributor_name: "{contributor_name}", contributor_password: "{contributor_password}") {{
                 status
                 message
                 info {{
@@ -52,7 +48,6 @@ def parse_create_user_response(response):
         str: A formatted string with the status and message of the user creation process.
     """
     if response.status_code == 200:
-        # Assuming the response is JSON and has the expected structure.
         try:
             data = response.json()
             user_data = data.get('data', {}).get('createUser', {})

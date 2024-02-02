@@ -9,10 +9,9 @@ def cli():
 @cli.command(name="create-user")
 @click.argument('contributor_id')
 @click.argument('contributor_name')
-@click.argument('contributor_signature')
-@click.argument('token')
-def create_user_cmd(contributor_id, contributor_name, contributor_signature, token):
-    response = create_user(contributor_id, contributor_name, contributor_signature, token)
+@click.argument('contributor_password')
+def create_user_cmd(contributor_id, contributor_name, contributor_password):
+    response = create_user(contributor_id, contributor_name, contributor_password)
     parsed_response = parse_create_user_response(response)
     print(parsed_response)
 
