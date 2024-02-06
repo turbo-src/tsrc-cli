@@ -59,7 +59,7 @@ def parse_create_user_response(response):
             if status == 'success':
                 return f"User '{contributor_name}' with ID '{contributor_id}' created successfully."
             else:
-                return f"Failed to create user: {message}"
+                return f"{message}"
 
         except json.JSONDecodeError:
             return "Invalid response format. Unable to parse JSON."
