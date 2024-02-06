@@ -19,7 +19,7 @@ class TestCLIApp(unittest.TestCase):
         command = "poetry run tsrc-cli create-user test_user_id test_user_name test_password"
         stdout, stderr, exit_code = self.run_cli_command(command)
         self.assertNotEqual(exit_code, 0)  # Expecting a non-zero exit code for user already exists
-        self.assertIn("User, test_user_name, already exists", stdout)
+        self.assertIn("User, test_user_name, already exists", stderr)
 
     def test_get_user(self):
         # Assuming the user 'test_user_id' is already created
@@ -33,7 +33,7 @@ class TestCLIApp(unittest.TestCase):
         command = "poetry run tsrc-cli get-user test_user_id_non_existent"
         stdout, stderr, exit_code = self.run_cli_command(command)
         self.assertNotEqual(exit_code, 0)  # Expecting a non-zero exit code for non-existent user
-        self.assertIn("Failed to retrieve user: User not found", stdout)
+        self.assertIn("User not found", stderr)
 
 if __name__ == '__main__':
     unittest.main()
