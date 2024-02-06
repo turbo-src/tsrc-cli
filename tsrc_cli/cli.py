@@ -1,3 +1,4 @@
+import sys
 import click
 from .lib.create_user import create_user  # Adjust the import as necessary
 from .lib.create_user import parse_create_user_response  # Adjust the import as necessary
@@ -13,8 +14,11 @@ def cli():
 @click.argument('contributor_password')
 def create_user_cmd(contributor_id, contributor_name, contributor_password):
     response = create_user(contributor_id, contributor_name, contributor_password)
-    parsed_response = parse_create_user_response(response)
+    status, parsed_response = parse_create_user_response(response)
     print(parsed_response)
+
+    if status == 'error':
+        sys.exit(1)
 
 @cli.command(name="get-user")
 @click.argument('contributor_id')

@@ -45,7 +45,7 @@ def parse_create_user_response(response):
         response (requests.Response): The response object from the create_user request.
 
     Returns:
-        str: A formatted string with the status and message of the user creation process.
+        tuple(str, str): A tuple containing the status of the user creation process and a formatted string message.
     """
     if response.status_code == 200:
         try:
@@ -57,11 +57,11 @@ def parse_create_user_response(response):
             contributor_name = user_data.get('info', {}).get('contributor_name')
 
             if status == 'success':
-                return f"User '{contributor_name}' with ID '{contributor_id}' created successfully."
+                return ('success', f"User '{contributor_name}' with ID '{contributor_id}' created successfully.")
             else:
-                return f"{message}"
+                return (status, f"{message}")
 
         except json.JSONDecodeError:
-            return "Invalid response format. Unable to parse JSON."
+            return ('error', "Invalid response format. Unable to parse JSON.")
     else:
-        return f"HTTP Error: {response.status_code}. Failed to create user."
+        return ('error', f"HTTP Error: {response.status_code}. Failed to create user.")
