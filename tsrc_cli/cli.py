@@ -8,11 +8,15 @@ from .lib.get_user import get_user, parse_get_user_response
 def cli():
     pass
 
-@cli.command(name="create-user")
-@click.argument('contributor_id')
-@click.argument('contributor_name')
-@click.argument('contributor_password')
-def create_user_cmd(contributor_id, contributor_name, contributor_password):
+@cli.group(name="user")
+def user():
+    pass
+
+@user.command(name="create")
+@click.option('--contributor-id', '-i', help='Contributor ID', required=False)
+@click.argument('contributor-name')
+@click.option('--contributor-password', '-p', help='Contributor password', required=False)
+def create_user_cmd(contributor_name, contributor_id, contributor_password):
     response = create_user(contributor_id, contributor_name, contributor_password)
     status, parsed_response = parse_create_user_response(response)
 
@@ -22,9 +26,10 @@ def create_user_cmd(contributor_id, contributor_name, contributor_password):
     else:
         print(parsed_response)
 
-@cli.command(name="get-user")
-@click.argument('contributor_id')
-def get_user_cmd(contributor_id):
+@user.command(name="get")
+@click.argument('contributor-id', required=False)
+@click.option('--contributor-password', '-p', help='Contributor password', required=False)
+def get_user_cmd(contributor_id, contributor_password):
     response = get_user(contributor_id)
     status, parsed_response = parse_get_user_response(response)
 
@@ -39,4 +44,5 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
