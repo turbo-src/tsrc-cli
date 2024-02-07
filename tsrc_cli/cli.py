@@ -1,8 +1,10 @@
 import sys
 import click
-from .lib.create_user import create_user  # Adjust the import as necessary
-from .lib.create_user import parse_create_user_response  # Adjust the import as necessary
+from .lib.create_user import create_user
+from .lib.create_user import parse_create_user_response
 from .lib.get_user import get_user, parse_get_user_response
+from .lib.get_tsrcid import get_tsrcid
+from .lib.get_tsrckey import get_tsrckey
 
 @click.group()
 def cli():
@@ -17,6 +19,19 @@ def user():
 @click.argument('contributor-name')
 @click.option('--contributor-password', '-p', help='Contributor password', required=False)
 def create_user_cmd(contributor_name, contributor_id, contributor_password):
+    # If contributor_id or contributor_password isn't passed, get them from the config file
+    if not contributor_id:
+        contributor_id = get_tsrcid()
+        if contributor_id is None:
+            sys.stderr.write("Error: Contributor ID is required.\n")
+            sys.exit(1)
+
+    if not contributor_password:
+        contributor_password = get_tsrckey()
+        if contributor_password is None:
+            sys.stderr.write("Error: Contributor password is required.\n")
+            sys.exit(1)
+
     response = create_user(contributor_id, contributor_name, contributor_password)
     status, parsed_response = parse_create_user_response(response)
 
