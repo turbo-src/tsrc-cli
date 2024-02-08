@@ -18,14 +18,14 @@ class TestCLIApp(unittest.TestCase):
     def test_02_create_user_exists(self):
         command = "poetry run tsrc-cli user create --contributor-id=test_user_id_other --contributor-password=test_password test_user_name"
         stdout, stderr, exit_code = self.run_cli_command(command)
-        #self.assertNotEqual(exit_code, 0)  # Expecting a non-zero exit code for contributor-id that already exists
+        self.assertNotEqual(exit_code, 0)  # Expecting a non-zero exit code for contributor-id that already exists
         self.assertIn("User 'test_user_name' already exists", stderr)
 
     def test_03_create_id_exists(self):
         command = "poetry run tsrc-cli user create --contributor-id=test_user_id --contributor-password=test_password test_user_name_other"
         stdout, stderr, exit_code = self.run_cli_command(command)
-        #self.assertNotEqual(exit_code, 0)  # Expecting a non-zero exit code for user already exists
-        self.assertIn("User 'test_user_name' already exists", stderr)
+        self.assertNotEqual(exit_code, 0)  # Expecting a non-zero exit code for user already exists
+        self.assertIn("Contributor ID 'test_user_id' already exists", stderr)
 
     def test_04_get_user(self):
         # Assuming the user 'test_user_id' is already created
