@@ -4,6 +4,10 @@ from typing import Any, Dict
 
 CONFIG = {'url': 'http://localhost:4000/graphql/'}  # Corrected URL
 
+
+# Fetch from host.
+# contributor-id: algo account
+# contributor-password: algo mnemonic
 def create_user(contributor_id: str, contributor_name: str, contributor_password: str) -> Dict[str, Any]:
     """
     Makes a POST request to create a user.

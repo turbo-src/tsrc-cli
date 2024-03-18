@@ -4,6 +4,9 @@ from typing import Any, Dict
 
 CONFIG = {'url': 'http://localhost:4000/graphql/'}  # Replace with your actual configuration
 
+# Fetch from host.
+# contributor-id: algo account
+# contributor-password: algo mnemonic
 def get_user(contributor_id: str) -> Dict[str, Any]:
     """
     Makes a POST request to get a user.
