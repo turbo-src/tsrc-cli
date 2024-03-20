@@ -9,6 +9,8 @@ license = "MIT"
 python = "^3.8"
 requests = "^2.31.0"
 click = "^8.1.7"
+py-algorand-sdk = "2.5.0"
+#py-algorand-sdk = {version = "2.5.0", source = "pypi"}
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.2"
