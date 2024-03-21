@@ -5,6 +5,10 @@ from .lib.create_user import parse_create_user_response
 from .lib.get_user import get_user, parse_get_user_response
 from .lib.get_tsrcid import get_tsrcid
 from .lib.get_tsrckey import get_tsrckey
+from .lib.utilities.tx_utility import AlgorandAccount
+#from lib.utilities.wallet_utility import (
+#    WalletUtility
+#)
 
 @click.group()
 def cli():
@@ -31,6 +35,10 @@ def create_user_cmd(contributor_name, contributor_id, contributor_password):
         if contributor_password is None:
             sys.stderr.write("Error: Contributor password is required.\n")
             sys.exit(1)
+
+    # Create an instance of AlgorandAccount for the new account (user) with the provided mnemonic
+    account = AlgorandAccount(mnemonic_phrase=contributor_password)
+    contributor_id = account.address
 
     response = create_user(contributor_id, contributor_name, contributor_password)
     status, parsed_response = parse_create_user_response(response)
