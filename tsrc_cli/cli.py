@@ -19,28 +19,32 @@ def user():
     pass
 
 @user.command(name="create")
-@click.option('--contributor-id', '-i', help='Contributor ID', required=False)
+#@click.option('--contributor-id', '-i', help='Contributor ID', required=False)
 @click.argument('contributor-name')
-@click.option('--contributor-password', '-p', help='Contributor password', required=False)
-def create_user_cmd(contributor_name, contributor_id, contributor_password):
-    # If contributor_id or contributor_password isn't passed, get them from the config file
-    if not contributor_id:
-        contributor_id = get_tsrcid()
-        if contributor_id is None:
-            sys.stderr.write("Error: Contributor ID is required.\n")
-            sys.exit(1)
+@click.option('--contributor-mnemonic', '-m', help='Contributor mnemonic', required=False)
+def create_user_cmd(contributor_name, contributor_mnemonic):
+    # If contributor_id or contributor_mnemonic isn't passed, get them from the config file
+    #if not contributor_id:
+    #    contributor_id = get_tsrcid()
+    #    if contributor_id is None:
+    #        sys.stderr.write("Error: Contributor ID is required.\n")
+    #        sys.exit(1)
 
-    if not contributor_password:
-        contributor_password = get_tsrckey()
-        if contributor_password is None:
-            sys.stderr.write("Error: Contributor password is required.\n")
-            sys.exit(1)
+    #if not contributor_mnemonic:
+    #    contributor_mnemonic = get_tsrckey()
+    #    if contributor_mnemonic is None:
+    #        sys.stderr.write("Error: Contributor mnemonic is required.\n")
+    #        sys.exit(1)
+
+    if not contributor_mnemonic:
+        sys.stderr.write("Error: Contributor mnemonic is required.\n")
+        sys.exit(1)
 
     # Create an instance of AlgorandAccount for the new account (user) with the provided mnemonic
-    account = AlgorandAccount(mnemonic_phrase=contributor_password)
+    account = AlgorandAccount(mnemonic_phrase=contributor_mnemonic)
     contributor_id = account.address
 
-    response = create_user(contributor_id, contributor_name, contributor_password)
+    response = create_user(contributor_id, contributor_name, "deprecating_password_for_unsigned_tx")
     status, parsed_response = parse_create_user_response(response)
 
     if status == 'error':
@@ -51,8 +55,8 @@ def create_user_cmd(contributor_name, contributor_id, contributor_password):
 
 @user.command(name="get")
 @click.argument('contributor-id', required=False)
-@click.option('--contributor-password', '-p', help='Contributor password', required=False)
-def get_user_cmd(contributor_id, contributor_password):
+@click.option('--contributor-mnemonic', '-m', help='Contributor mnemonic', required=False)
+def get_user_cmd(contributor_id, contributor_mnemonic):
     response = get_user(contributor_id)
     status, parsed_response = parse_get_user_response(response)
 

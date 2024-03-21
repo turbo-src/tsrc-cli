@@ -10,12 +10,12 @@ class TestCLIApp(unittest.TestCase):
         return stdout.decode('utf-8'), stderr.decode('utf-8'), process.returncode
 
     def test_01_create_user(self):
-        # contributor-password: algo mnemonic
+        # contributor-mnemonic: algo mnemonic
         username = "test_user_name"
         contributor_id = "VAX6M7SZY65NXSMAFRNUYHDAZK3326IUPZFKO63QZAAMIPVAK7ECTS2F4M"
-        contributor_password = "twin pumpkin plastic stage fortune shallow melt betray ribbon receive claim enrich price exile absent avoid woman toilet print settle shiver inform rookie absorb unaware"
+        contributor_mnemonic = "twin pumpkin plastic stage fortune shallow melt betray ribbon receive claim enrich price exile absent avoid woman toilet print settle shiver inform rookie absorb unaware"
 
-        command = f"poetry run tsrc-cli user create --contributor-id={contributor_id} --contributor-password='{contributor_password}' {username}"
+        command = f"poetry run tsrc-cli user create --contributor-mnemonic='{contributor_mnemonic}' {username}"
         stdout, stderr, exit_code = self.run_cli_command(command)
         self.assertEqual(exit_code, 0)
         self.assertIn(f"User '{username}' with ID '{contributor_id}' created successfully", stdout)
@@ -24,9 +24,9 @@ class TestCLIApp(unittest.TestCase):
         username = "test_user_name"
         #contributor_id = "ELNJI3EFJYG5T7L3FXZEWAPUVUE24UUXKOUQALZQWXYUCWUM5J4DHLNU2A"
         contributor_id = "XNDK5BBUOCENNRQ3FT4SQSCENFBNSY3BMOU3W2EZGNLH7ZD5ZSANKIRJZM"
-        contributor_password = "brain rough jazz defy absent ability jeans much hire retire metal tragic fury culture stem beach farm upset relief stove sound comic bunker able exist"
+        contributor_mnemonic = "brain rough jazz defy absent ability jeans much hire retire metal tragic fury culture stem beach farm upset relief stove sound comic bunker able exist"
 
-        command = f"poetry run tsrc-cli user create --contributor-id={contributor_id} --contributor-password='{contributor_password}' {username}"
+        command = f"poetry run tsrc-cli user create --contributor-mnemonic='{contributor_mnemonic}' {username}"
         stdout, stderr, exit_code = self.run_cli_command(command)
         self.assertNotEqual(exit_code, 0)  # Expecting a non-zero exit code for contributor-id that already exists
         self.assertIn(f"User '{username}' already exists", stderr)
@@ -34,9 +34,9 @@ class TestCLIApp(unittest.TestCase):
     def test_03_create_id_exists(self):
         username = "test_user_name_other"
         contributor_id = "VAX6M7SZY65NXSMAFRNUYHDAZK3326IUPZFKO63QZAAMIPVAK7ECTS2F4M"
-        contributor_password = "twin pumpkin plastic stage fortune shallow melt betray ribbon receive claim enrich price exile absent avoid woman toilet print settle shiver inform rookie absorb unaware"
+        contributor_mnemonic = "twin pumpkin plastic stage fortune shallow melt betray ribbon receive claim enrich price exile absent avoid woman toilet print settle shiver inform rookie absorb unaware"
 
-        command = f"poetry run tsrc-cli user create --contributor-id={contributor_id} --contributor-password='{contributor_password}' {username}"
+        command = f"poetry run tsrc-cli user create --contributor-mnemonic='{contributor_mnemonic}' {username}"
         stdout, stderr, exit_code = self.run_cli_command(command)
         self.assertNotEqual(exit_code, 0)  # Expecting a non-zero exit code for user already exists
         self.assertIn(f"Contributor ID '{contributor_id}' already exists", stderr)
