@@ -41,12 +41,20 @@ class TestCLIApp(unittest.TestCase):
         self.assertNotEqual(exit_code, 0)  # Expecting a non-zero exit code for user already exists
         self.assertIn(f"Contributor ID '{contributor_id}' already exists", stderr)
 
-    # contributor-id: algo account
     def test_04_get_user(self):
         # Assuming the user 'test_user_id' is already created
         username = "test_user_name"
         contributor_id = "VAX6M7SZY65NXSMAFRNUYHDAZK3326IUPZFKO63QZAAMIPVAK7ECTS2F4M"
-        command = f"poetry run tsrc-cli user get {contributor_id}"
+        command = f"poetry run tsrc-cli user get {username}"
+        stdout, stderr, exit_code = self.run_cli_command(command)
+        self.assertEqual(exit_code, 0)
+        self.assertIn(f"User '{username}' with ID '{contributor_id}' retrieved successfully", stdout)
+
+    def test_04_get_user_by_id(self):
+        # Assuming the user 'test_user_id' is already created
+        username = "test_user_name"
+        contributor_id = "VAX6M7SZY65NXSMAFRNUYHDAZK3326IUPZFKO63QZAAMIPVAK7ECTS2F4M"
+        command = f"poetry run tsrc-cli user get --contributor-id {contributor_id}"
         stdout, stderr, exit_code = self.run_cli_command(command)
         self.assertEqual(exit_code, 0)
         self.assertIn(f"User '{username}' with ID '{contributor_id}' retrieved successfully", stdout)

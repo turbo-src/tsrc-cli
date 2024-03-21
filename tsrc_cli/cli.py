@@ -3,6 +3,7 @@ import click
 from .lib.create_user import create_user
 from .lib.create_user import parse_create_user_response
 from .lib.get_user import get_user, parse_get_user_response
+from .lib.get_user_by_name import get_user_by_name, parse_get_user_by_name_response
 from .lib.get_tsrcid import get_tsrcid
 from .lib.get_tsrckey import get_tsrckey
 from .lib.utilities.tx_utility import AlgorandAccount
@@ -54,12 +55,20 @@ def create_user_cmd(contributor_name, contributor_mnemonic):
         print(parsed_response)
 
 @user.command(name="get")
-@click.argument('contributor-id', required=False)
-@click.option('--contributor-mnemonic', '-m', help='Contributor mnemonic', required=False)
-def get_user_cmd(contributor_id, contributor_mnemonic):
-    response = get_user(contributor_id)
-    status, parsed_response = parse_get_user_response(response)
-
+@click.argument('contributor-name', required=False)
+@click.option('--contributor-id', '-i', help='Contributor ID', required=False)
+def get_user_cmd(contributor_name, contributor_id):
+    if contributor_id:
+        response = get_user(contributor_id)
+        status, parsed_response = parse_get_user_response(response)
+    else:
+        if not contributor_name:
+            sys.stderr.write("Error: Contributor name or ID is required.\n")
+            sys.exit(1)
+        
+        response = get_user_by_name(contributor_name)
+        status, parsed_response = parse_get_user_by_name_response(response)
+    
     if status == 'error':
         sys.stderr.write(parsed_response + "\n")
         sys.exit(1)
