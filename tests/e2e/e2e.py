@@ -1,8 +1,14 @@
 import unittest
 import subprocess
 import json
+import os
 
 class TestCLIApp(unittest.TestCase):
+    def setUp(self):
+        # Read the test-config.json file
+        config_file = os.path.join(os.path.dirname(__file__), 'test-config.json')
+        with open(config_file) as f:
+            self.config = json.load(f)
 
     def run_cli_command(self, command):
         process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
@@ -10,10 +16,9 @@ class TestCLIApp(unittest.TestCase):
         return stdout.decode('utf-8'), stderr.decode('utf-8'), process.returncode
 
     def test_01_create_user(self):
-        # contributor-mnemonic: algo mnemonic
         username = "test_user_name"
-        contributor_id = "VAX6M7SZY65NXSMAFRNUYHDAZK3326IUPZFKO63QZAAMIPVAK7ECTS2F4M"
-        contributor_mnemonic = "twin pumpkin plastic stage fortune shallow melt betray ribbon receive claim enrich price exile absent avoid woman toilet print settle shiver inform rookie absorb unaware"
+        contributor_id = self.config['creatorInfo']['address']
+        contributor_mnemonic = self.config['creatorInfo']['mnemonic']
 
         command = f"poetry run tsrc-cli user create --contributor-mnemonic='{contributor_mnemonic}' {username}"
         stdout, stderr, exit_code = self.run_cli_command(command)
@@ -22,9 +27,8 @@ class TestCLIApp(unittest.TestCase):
 
     def test_02_create_user_exists(self):
         username = "test_user_name"
-        #contributor_id = "ELNJI3EFJYG5T7L3FXZEWAPUVUE24UUXKOUQALZQWXYUCWUM5J4DHLNU2A"
-        contributor_id = "XNDK5BBUOCENNRQ3FT4SQSCENFBNSY3BMOU3W2EZGNLH7ZD5ZSANKIRJZM"
-        contributor_mnemonic = "brain rough jazz defy absent ability jeans much hire retire metal tragic fury culture stem beach farm upset relief stove sound comic bunker able exist"
+        contributor_id = self.config['user1Info']['address']
+        contributor_mnemonic = self.config['user1Info']['mnemonic']
 
         command = f"poetry run tsrc-cli user create --contributor-mnemonic='{contributor_mnemonic}' {username}"
         stdout, stderr, exit_code = self.run_cli_command(command)
@@ -33,8 +37,8 @@ class TestCLIApp(unittest.TestCase):
 
     def test_03_create_id_exists(self):
         username = "test_user_name_other"
-        contributor_id = "VAX6M7SZY65NXSMAFRNUYHDAZK3326IUPZFKO63QZAAMIPVAK7ECTS2F4M"
-        contributor_mnemonic = "twin pumpkin plastic stage fortune shallow melt betray ribbon receive claim enrich price exile absent avoid woman toilet print settle shiver inform rookie absorb unaware"
+        contributor_id = self.config['creatorInfo']['address']
+        contributor_mnemonic = self.config['creatorInfo']['mnemonic']
 
         command = f"poetry run tsrc-cli user create --contributor-mnemonic='{contributor_mnemonic}' {username}"
         stdout, stderr, exit_code = self.run_cli_command(command)
@@ -42,25 +46,22 @@ class TestCLIApp(unittest.TestCase):
         self.assertIn(f"Contributor ID '{contributor_id}' already exists", stderr)
 
     def test_04_get_user(self):
-        # Assuming the user 'test_user_id' is already created
         username = "test_user_name"
-        contributor_id = "VAX6M7SZY65NXSMAFRNUYHDAZK3326IUPZFKO63QZAAMIPVAK7ECTS2F4M"
+        contributor_id = self.config['creatorInfo']['address']
         command = f"poetry run tsrc-cli user get {username}"
         stdout, stderr, exit_code = self.run_cli_command(command)
         self.assertEqual(exit_code, 0)
         self.assertIn(f"User '{username}' with ID '{contributor_id}' retrieved successfully", stdout)
 
     def test_04_get_user_by_id(self):
-        # Assuming the user 'test_user_id' is already created
         username = "test_user_name"
-        contributor_id = "VAX6M7SZY65NXSMAFRNUYHDAZK3326IUPZFKO63QZAAMIPVAK7ECTS2F4M"
+        contributor_id = self.config['creatorInfo']['address']
         command = f"poetry run tsrc-cli user get --contributor-id {contributor_id}"
         stdout, stderr, exit_code = self.run_cli_command(command)
         self.assertEqual(exit_code, 0)
         self.assertIn(f"User '{username}' with ID '{contributor_id}' retrieved successfully", stdout)
 
     def test_05_get_user_non_existent(self):
-        # Assuming the user 'test_user_id' is not created
         command = f"poetry run tsrc-cli user get test_user_id_non_existent"
         stdout, stderr, exit_code = self.run_cli_command(command)
         self.assertNotEqual(exit_code, 0)  # Expecting a non-zero exit code for non-existent user
