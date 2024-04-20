@@ -67,5 +67,18 @@ class TestCLIApp(unittest.TestCase):
         self.assertNotEqual(exit_code, 0)  # Expecting a non-zero exit code for non-existent user
         self.assertIn(f"User not found", stderr)
 
+    def test_06_create_repo(self):
+        username = "test_user_name"
+        contributor_id = self.config['creatorInfo']['address']
+        contributor_mnemonic = self.config['creatorInfo']['mnemonic']
+
+        command = f"poetry run tsrc-cli repo create --contributor-mnemonic='{contributor_mnemonic}' {username}"
+        stdout, stderr, exit_code = self.run_cli_command(command)
+        self.assertEqual(exit_code, 0)
+
+        print('\ncreat repo\n\n', stdout)
+
+        self.assertIn(f"Repo '{username}' with ID '{contributor_id}' created successfully", stdout)
+
 if __name__ == '__main__':
     unittest.main()
