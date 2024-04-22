@@ -41,13 +41,19 @@ class Vote:
         with open('vote_clear_state.teal.tok', 'rb') as f:
             self.clear_program = f.read()
 
-    def create_app(self, app_args=None):
-        sender = account.address_from_private_key(self.creator_private_key)
-        params = self.client.suggested_params()
+    def create_repo(account, app_args=None):
+        sender = account.address
+        params = algod_client.suggested_params()
         params.flat_fee = True
         params.fee = 1000
-        global_schema = StateSchema(self.global_ints, self.global_bytes)
-        local_schema = StateSchema(self.local_ints, self.local_bytes)
+
+        global_ints = 24
+        global_bytes = 11
+        local_ints = 0
+        local_bytes = 0
+
+        global_schema = StateSchema(global_ints, global_bytes)
+        local_schema = StateSchema(local_ints, local_bytes)
 
         app_args = [intToBytes(1000000)]  # TotalSupply as an app argument
 
@@ -55,22 +61,16 @@ class Vote:
             sender,
             params,
             transaction.OnComplete.NoOpOC.real,
-            self.approval_program,
-            self.clear_program,
+            approval_program,
+            clear_program,
             global_schema,
             local_schema,
             app_args,
-            foreign_assets=[self.asset_id]
         )
-
-        signed_txn = txn.sign(self.creator_private_key)
-        tx_id = signed_txn.transaction.get_txid()
-        self.client.send_transactions([signed_txn])
-        wait_for_confirmation(self.client, tx_id)
-        response = self.client.pending_transaction_info(tx_id)
-        self.app_id = response['application-index']
-
-        return tx_id, self.app_id
+    
+        signed_txn = txn.sign(account.private_key)
+    
+        return signed_txn
 
     def optin(self):
         opt_in_app(self.client, self.user_private_key, self.app_id)

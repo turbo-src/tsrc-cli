@@ -4,11 +4,11 @@ from .lib.create_user import create_user
 from .lib.create_user import parse_create_user_response
 from .lib.get_user import get_user, parse_get_user_response
 from .lib.get_user_by_name import get_user_by_name, parse_get_user_by_name_response
-from .lib.create_repo import create_repo
 from .lib.create_repo import parse_create_repo_response
 from .lib.get_tsrcid import get_tsrcid
 from .lib.get_tsrckey import get_tsrckey
 from .lib.utilities.tx_utility import AlgorandAccount
+from .lib.blockchain.blockchain import create_repo
 
 @click.group()
 def cli():
@@ -76,7 +76,27 @@ def create_repo_cmd(contributor_name, contributor_mnemonic):
     account = AlgorandAccount(mnemonic_phrase=contributor_mnemonic)
     contributor_id = account.address
 
-    response = create_repo(contributor_id, contributor_name, "deprecating_password_for_unsigned_tx")
+    # Sign the transaction using the create_repo function from blockchain.py
+    signed_txn = create_repo(account)
+
+    response = requests.post(
+        CONFIG['url'],
+        json={
+            'query': f'''
+            {{
+                createRepo(contributor_id: "{contributor_id}", repo_name: "{contributor_name}", contributor_password: "{signed_txn}") {{
+                    status
+                    message
+                    repoName
+                    repoID
+                    repoSignature
+                }}
+            }}
+            '''
+        },
+        headers={'accept': 'json'}
+    )
+
     status, parsed_response = parse_create_repo_response(response)
 
     if status == 'error':
