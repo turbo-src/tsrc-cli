@@ -1,8 +1,6 @@
 import requests
 import json
 from typing import Any, Dict
-from .blockchain.blockchain import create_repo as create_repo_txn
-
 
 CONFIG = {'url': 'http://localhost:4000/graphql/'}  # Corrected URL
 
