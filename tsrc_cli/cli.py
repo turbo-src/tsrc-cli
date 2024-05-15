@@ -2,6 +2,7 @@ import sys
 import requests
 import click
 from algosdk.v2client import algod
+from algosdk import transaction, encoding
 from tsrc_cli.lib.create_user import create_user, parse_create_user_response
 from tsrc_cli.lib.get_user import get_user, parse_get_user_response
 from tsrc_cli.lib.get_user_by_name import get_user_by_name, parse_get_user_by_name_response
@@ -10,6 +11,9 @@ from tsrc_cli.lib.get_tsrcid import get_tsrcid
 from tsrc_cli.lib.get_tsrckey import get_tsrckey
 from tsrc_cli.lib.utilities.tx_utility import AlgorandAccount
 from tsrc_cli.lib.blockchain.blockchain import create_repo
+from tsrc_cli.lib.utilities.utility import wait_for_confirmation
+import base64
+import msgpack
 
 
 @click.group()
@@ -88,10 +92,105 @@ def create_repo_cmd(contributor_name, contributor_mnemonic):
         clear_program = f.read()
     print("Loaded approval and clear programs")
 
+    import json
+    # Load the configuration file
+    with open('config/config.json', 'r') as file:
+        config = json.load(file)
+
+    # Accessing specific configuration data
+    creator_mnemonic = config['creatorInfo']['mnemonic']
+    algod_token = config['algodToken']
+    algod_address = config['algodAddress']
+    asset_id = config['assetId']
+    client = algod.AlgodClient(algod_token, algod_address)
+
     # Sign the transaction using the create_repo function from blockchain.py
     print("Signing the transaction")
-    signed_txn = create_repo(account, asset_id='1001', approval_program=approval_program, clear_program=clear_program)
+    signed_txn = create_repo(client, account, asset_id, approval_program=approval_program, clear_program=clear_program)
     print("Transaction signed")
+
+    # Assuming `signed_txn` is your SignedTransaction object
+    print("Type of signed_txn:", type(signed_txn))
+    
+    # Convert the signed transaction to a dictionary
+    txn_dict = signed_txn.dictify()
+    
+    # Serialize the transaction dictionary using msgpack
+    serialized_txn = msgpack.packb(txn_dict)
+    
+    # Confirm the type to ensure it's bytes
+    print(f"Serialized transaction type: {type(serialized_txn)}")
+    
+    # Encode the serialized transaction to base64
+    base64_txn = base64.b64encode(serialized_txn).decode('utf-8')
+    
+    # Print the base64 encoded transaction
+    print(f"Base64 encoded transaction: {base64_txn}")
+
+    ## Print the signed_txn object
+    #print("Signed transaction object:", signed_txn)
+    #print("Transaction ID:", signed_txn.transaction.get_txid())
+
+    ## Encode the signed_txn
+    #encoded_txn = encoding.msgpack_encode(signed_txn)
+    #print("Encoded signed transaction:", encoded_txn)
+    #
+    ## Decode the encoded_txn
+    #decoded_txn = encoding.msgpack_decode(encoded_txn)
+    #print("Decoded transaction object:", decoded_txn)
+    #print("Decoded transaction type:", type(decoded_txn))
+    #print("Decoded transaction:")
+    #print("  Transaction ID:", decoded_txn.transaction.get_txid())
+    #print("  Sender:", decoded_txn.transaction.sender)
+    #print("  Application ID:", decoded_txn.transaction.index)
+    #print("  Fee:", decoded_txn.transaction.fee)
+    #print("  First Valid:", decoded_txn.transaction.first_valid_round)
+    #print("  Last Valid:", decoded_txn.transaction.last_valid_round)
+    #print("  Genesis Hash:", decoded_txn.transaction.genesis_hash)
+    #print("  Genesis ID:", decoded_txn.transaction.genesis_id)
+    #print("  Group:", decoded_txn.transaction.group)
+    #print("  Lease:", decoded_txn.transaction.lease)
+    #print("  Note:", decoded_txn.transaction.note)
+    #print("  Rekey To:", decoded_txn.transaction.rekey_to)
+    #print("  Type:", decoded_txn.transaction.type)
+    #
+    #if hasattr(decoded_txn.transaction, 'approval_program'):
+    #    print("  Approval Program:", decoded_txn.transaction.approval_program)
+    #if hasattr(decoded_txn.transaction, 'clear_state_program'):
+    #    print("  Clear State Program:", decoded_txn.transaction.clear_state_program)
+    #if hasattr(decoded_txn.transaction, 'app_args'):
+    #    print("  App Arguments:", decoded_txn.transaction.app_args)
+    #if hasattr(decoded_txn.transaction, 'accounts'):
+    #    print("  Accounts:", decoded_txn.transaction.accounts)
+    #if hasattr(decoded_txn.transaction, 'foreign_apps'):
+    #    print("  Foreign Apps:", decoded_txn.transaction.foreign_apps)
+    #if hasattr(decoded_txn.transaction, 'foreign_assets'):
+    #    print("  Foreign Assets:", decoded_txn.transaction.foreign_assets)
+    #if hasattr(decoded_txn.transaction, 'global_state_schema'):
+    #    print("  Global State Schema:", decoded_txn.transaction.global_state_schema)
+    #if hasattr(decoded_txn.transaction, 'local_state_schema'):
+    #    print("  Local State Schema:", decoded_txn.transaction.local_state_schema)
+    #if hasattr(decoded_txn.transaction, 'extra_program_pages'):
+    #    print("  Extra Program Pages:", decoded_txn.transaction.extra_program_pages)   
+
+    ## Veify the decoded transaction
+    #print("Verifying the decoded transaction...")
+    #print("Decoded transaction type:", type(decoded_txn))
+    #print("Decoded transaction:", decoded_txn)
+    #print("Transaction ID:", decoded_txn.transaction.get_txid())
+    #print("Sender:", decoded_txn.transaction.sender)
+    #print("Application ID:", decoded_txn.transaction.index)
+
+    ## Send the signed transaction
+    #print("Sending the signed transaction")
+    #tx_id = signed_txn.transaction.get_txid()
+    #print(f"Get ID of signed-tx: {tx_id}")
+    #tx_id = client.send_transaction(signed_txn)
+    #print(f"Transaction sent with ID: {tx_id}")
+    #wait_for_confirmation(client, tx_id)
+    #response = client.pending_transaction_info(tx_id)
+    #app_id = response['application-index']
+    #print("Created new app-id:", app_id)
 
     CONFIG = {'url': 'http://localhost:4000/graphql/'}  # Corrected URL
 
@@ -102,7 +201,7 @@ def create_repo_cmd(contributor_name, contributor_mnemonic):
         json={
             'query': f'''
             {{
-                createRepo(contributor_id: "{contributor_id}", repo_name: "{contributor_name}", contributor_password: "{signed_txn}") {{
+                createRepo(contributor_id: "{contributor_id}", repo_name: "{contributor_name}", contributor_password: "{base64_txn}") {{
                     status
                     message
                     repoName
