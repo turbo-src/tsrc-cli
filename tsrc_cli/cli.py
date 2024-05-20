@@ -128,50 +128,50 @@ def create_repo_cmd(contributor_name, contributor_mnemonic):
     print(f"Base64 encoded transaction: {base64_txn}")
 
     ## Print the signed_txn object
-    #print("Signed transaction object:", signed_txn)
-    #print("Transaction ID:", signed_txn.transaction.get_txid())
+    print("Signed transaction object:", signed_txn)
+    print("Transaction ID:", signed_txn.transaction.get_txid())
 
-    ## Encode the signed_txn
-    #encoded_txn = encoding.msgpack_encode(signed_txn)
-    #print("Encoded signed transaction:", encoded_txn)
-    #
-    ## Decode the encoded_txn
-    #decoded_txn = encoding.msgpack_decode(encoded_txn)
-    #print("Decoded transaction object:", decoded_txn)
-    #print("Decoded transaction type:", type(decoded_txn))
-    #print("Decoded transaction:")
-    #print("  Transaction ID:", decoded_txn.transaction.get_txid())
-    #print("  Sender:", decoded_txn.transaction.sender)
-    #print("  Application ID:", decoded_txn.transaction.index)
-    #print("  Fee:", decoded_txn.transaction.fee)
-    #print("  First Valid:", decoded_txn.transaction.first_valid_round)
-    #print("  Last Valid:", decoded_txn.transaction.last_valid_round)
-    #print("  Genesis Hash:", decoded_txn.transaction.genesis_hash)
-    #print("  Genesis ID:", decoded_txn.transaction.genesis_id)
-    #print("  Group:", decoded_txn.transaction.group)
-    #print("  Lease:", decoded_txn.transaction.lease)
-    #print("  Note:", decoded_txn.transaction.note)
-    #print("  Rekey To:", decoded_txn.transaction.rekey_to)
-    #print("  Type:", decoded_txn.transaction.type)
-    #
-    #if hasattr(decoded_txn.transaction, 'approval_program'):
-    #    print("  Approval Program:", decoded_txn.transaction.approval_program)
-    #if hasattr(decoded_txn.transaction, 'clear_state_program'):
-    #    print("  Clear State Program:", decoded_txn.transaction.clear_state_program)
-    #if hasattr(decoded_txn.transaction, 'app_args'):
-    #    print("  App Arguments:", decoded_txn.transaction.app_args)
-    #if hasattr(decoded_txn.transaction, 'accounts'):
-    #    print("  Accounts:", decoded_txn.transaction.accounts)
-    #if hasattr(decoded_txn.transaction, 'foreign_apps'):
-    #    print("  Foreign Apps:", decoded_txn.transaction.foreign_apps)
-    #if hasattr(decoded_txn.transaction, 'foreign_assets'):
-    #    print("  Foreign Assets:", decoded_txn.transaction.foreign_assets)
-    #if hasattr(decoded_txn.transaction, 'global_state_schema'):
-    #    print("  Global State Schema:", decoded_txn.transaction.global_state_schema)
-    #if hasattr(decoded_txn.transaction, 'local_state_schema'):
-    #    print("  Local State Schema:", decoded_txn.transaction.local_state_schema)
-    #if hasattr(decoded_txn.transaction, 'extra_program_pages'):
-    #    print("  Extra Program Pages:", decoded_txn.transaction.extra_program_pages)   
+    # Encode the signed_txn
+    encoded_txn = encoding.msgpack_encode(signed_txn)
+    print("Encoded signed transaction:", encoded_txn)
+    
+    # Decode the encoded_txn
+    decoded_txn = encoding.msgpack_decode(encoded_txn)
+    print("Decoded transaction object:", decoded_txn)
+    print("Decoded transaction type:", type(decoded_txn))
+    print("Decoded transaction:")
+    print("  Transaction ID:", decoded_txn.transaction.get_txid())
+    print("  Sender:", decoded_txn.transaction.sender)
+    print("  Application ID:", decoded_txn.transaction.index)
+    print("  Fee:", decoded_txn.transaction.fee)
+    print("  First Valid:", decoded_txn.transaction.first_valid_round)
+    print("  Last Valid:", decoded_txn.transaction.last_valid_round)
+    print("  Genesis Hash:", decoded_txn.transaction.genesis_hash)
+    print("  Genesis ID:", decoded_txn.transaction.genesis_id)
+    print("  Group:", decoded_txn.transaction.group)
+    print("  Lease:", decoded_txn.transaction.lease)
+    print("  Note:", decoded_txn.transaction.note)
+    print("  Rekey To:", decoded_txn.transaction.rekey_to)
+    print("  Type:", decoded_txn.transaction.type)
+    
+    if hasattr(decoded_txn.transaction, 'approval_program'):
+        print("  Approval Program:", decoded_txn.transaction.approval_program)
+    if hasattr(decoded_txn.transaction, 'clear_state_program'):
+        print("  Clear State Program:", decoded_txn.transaction.clear_state_program)
+    if hasattr(decoded_txn.transaction, 'app_args'):
+        print("  App Arguments:", decoded_txn.transaction.app_args)
+    if hasattr(decoded_txn.transaction, 'accounts'):
+        print("  Accounts:", decoded_txn.transaction.accounts)
+    if hasattr(decoded_txn.transaction, 'foreign_apps'):
+        print("  Foreign Apps:", decoded_txn.transaction.foreign_apps)
+    if hasattr(decoded_txn.transaction, 'foreign_assets'):
+        print("  Foreign Assets:", decoded_txn.transaction.foreign_assets)
+    if hasattr(decoded_txn.transaction, 'global_state_schema'):
+        print("  Global State Schema:", decoded_txn.transaction.global_state_schema)
+    if hasattr(decoded_txn.transaction, 'local_state_schema'):
+        print("  Local State Schema:", decoded_txn.transaction.local_state_schema)
+    if hasattr(decoded_txn.transaction, 'extra_program_pages'):
+        print("  Extra Program Pages:", decoded_txn.transaction.extra_program_pages)   
 
     ## Veify the decoded transaction
     #print("Verifying the decoded transaction...")
