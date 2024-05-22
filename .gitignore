@@ -2,3 +2,5 @@ __pycache__/
 click
 notes.md
 *config.json
+vote_approval.teal*
+vote_clear_state.teal*
