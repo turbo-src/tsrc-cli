@@ -22,11 +22,11 @@ class TestCLIApp(unittest.TestCase):
         stdout, stderr = process.communicate()
         exit_code = process.returncode
     
-        print("Captured stdout:")  # Add this line to print the captured stdout
-        print(stdout)  # Add this line to print the captured stdout
+        #print("Captured stdout:")  # Add this line to print the captured stdout
+        #print(stdout)  # Add this line to print the captured stdout
     
-        print("Captured stderr:")  # Add this line to print the captured stderr
-        print(stderr)  # Add this line to print the captured stderr
+        #print("Captured stderr:")  # Add this line to print the captured stderr
+        #print(stderr)  # Add this line to print the captured stderr
     
         return stdout, stderr, exit_code
 
