@@ -60,16 +60,16 @@ def parse_create_repo_response(response):
             user_data = data.get('data', {}).get('createRepo', {})
             status = user_data.get('status')
             message = user_data.get('message')
-            contributor_id = user_data.get('repoID')  # Ensure this key matches the actual response
-            contributor_name = user_data.get('repoName')
+            repo_id = user_data.get('repoID')  # Ensure this key matches the actual response
+            repo_name = user_data.get('repoName')
 
             if status == 201:
-                return ('success', f"Repo '{contributor_name}' with ID '{contributor_id}' created successfully.")
+                return ('success', f"Repo '{repo_name}' with ID '{repo_id}' created successfully.")
             else:
                 return (status, f"{message}")
 
         except json.JSONDecodeError:
             return ('error', "Invalid response format. Unable to parse JSON.")
     else:
-        return ('error', f"HTTP Error: {response.status_code}. Failed to create user.")
+        return ('error', f"HTTP Error: {response.status_code}. Failed to create repo.")
 

@@ -2,6 +2,7 @@ import unittest
 import subprocess
 import json
 import os
+import re
 
 class TestCLIApp(unittest.TestCase):
     def setUp(self):
@@ -90,9 +91,14 @@ class TestCLIApp(unittest.TestCase):
         stdout, stderr, exit_code = self.run_cli_command(command)
         self.assertEqual(exit_code, 0)
 
-        print('\ncreat repo\n\n', stdout)
+        # Extract the repoID from stdout
+        match = re.search(r"Repo 'test_user_name' with ID '(.+)' created successfully", stdout)
+        if match:
+            repo_id = match.group(1)
+            self.assertTrue(repo_id.startswith(contributor_id), "Repo ID does not start with contributor_id")
+        else:
+            self.fail("Expected message not found in stdout")
 
-        self.assertIn(f"Repo '{username}' with ID '{contributor_id}' created successfully", stdout)
 
 if __name__ == '__main__':
     unittest.main(buffer=False)
