@@ -54,16 +54,16 @@ def parse_create_repo_response(response):
     Returns:
         tuple(str, str): A tuple containing the status of the user creation process and a formatted string message.
     """
-    if response.status_code == 200:
+    if response.status_code == 200 or response.status_code == 201:
         try:
             data = response.json()
             user_data = data.get('data', {}).get('createRepo', {})
             status = user_data.get('status')
             message = user_data.get('message')
-            contributor_id = user_data.get('info', {}).get('contributor_id')
-            contributor_name = user_data.get('info', {}).get('contributor_name')
+            contributor_id = user_data.get('repoID')  # Ensure this key matches the actual response
+            contributor_name = user_data.get('repoName')
 
-            if status == 'success':
+            if status == 201:
                 return ('success', f"Repo '{contributor_name}' with ID '{contributor_id}' created successfully.")
             else:
                 return (status, f"{message}")
@@ -72,3 +72,4 @@ def parse_create_repo_response(response):
             return ('error', "Invalid response format. Unable to parse JSON.")
     else:
         return ('error', f"HTTP Error: {response.status_code}. Failed to create user.")
+
