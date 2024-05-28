@@ -83,16 +83,16 @@ class TestCLIApp(unittest.TestCase):
         self.assertIn(f"User not found", stderr)
 
     def test_06_create_repo(self):
-        username = "test_user_name"
+        reponame = "test_repo_name"
         contributor_id = self.config['creatorInfo']['address']
         contributor_mnemonic = self.config['creatorInfo']['mnemonic']
 
-        command = f"poetry run tsrc-cli repo create --contributor-mnemonic='{contributor_mnemonic}' {username}"
+        command = f"poetry run tsrc-cli repo create --contributor-mnemonic='{contributor_mnemonic}' {reponame}"
         stdout, stderr, exit_code = self.run_cli_command(command)
         self.assertEqual(exit_code, 0)
 
         # Extract the repoID from stdout
-        match = re.search(r"Repo 'test_user_name' with ID '(.+)' created successfully", stdout)
+        match = re.search(r"Repo 'test_repo_name' with ID '(.+)' created successfully", stdout)
         if match:
             repo_id = match.group(1)
             self.assertTrue(repo_id.startswith(contributor_id), "Repo ID does not start with contributor_id")
