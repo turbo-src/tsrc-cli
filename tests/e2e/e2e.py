@@ -21,13 +21,13 @@ class TestCLIApp(unittest.TestCase):
         )
         stdout, stderr = process.communicate()
         exit_code = process.returncode
-    
-        #print("Captured stdout:")  # Add this line to print the captured stdout
-        #print(stdout)  # Add this line to print the captured stdout
-    
-        #print("Captured stderr:")  # Add this line to print the captured stderr
-        #print(stderr)  # Add this line to print the captured stderr
-    
+
+        print("Captured stdout:")  # Add this line to print the captured stdout
+        print(stdout)  # Add this line to print the captured stdout
+
+        print("Captured stderr:")  # Add this line to print the captured stderr
+        print(stderr)  # Add this line to print the captured stderr
+
         return stdout, stderr, exit_code
 
     def test_01_create_user(self):
@@ -98,6 +98,30 @@ class TestCLIApp(unittest.TestCase):
             self.assertTrue(repo_id.startswith(contributor_id), "Repo ID does not start with contributor_id")
         else:
             self.fail("Expected message not found in stdout")
+
+    def test_07_get_repo(self):
+        reponame = "test_repo_name"
+        contributor_id = self.config['creatorInfo']['address']
+
+        # Get the repo by repo name
+        command = f"poetry run tsrc-cli repo get {reponame}"
+        stdout, stderr, exit_code = self.run_cli_command(command)
+        self.assertEqual(exit_code, 0)
+        self.assertIn(f"Repo '{reponame}' retrieved successfully", stdout)
+
+        # Extract the repo ID from stdout
+        match = re.search(r"ID: (.+)", stdout)
+        if match:
+            repo_id = match.group(1)
+            self.assertTrue(repo_id.startswith(contributor_id), "Repo ID does not start with contributor_id")
+        else:
+            self.fail("Expected message not found in stdout")
+
+        # Get the repo by repo ID
+        command = f"poetry run tsrc-cli repo get --repo-id {repo_id}"
+        stdout, stderr, exit_code = self.run_cli_command(command)
+        self.assertEqual(exit_code, 0)
+        self.assertIn(f"Repo '{reponame}' retrieved successfully", stdout)
 
 
 if __name__ == '__main__':
