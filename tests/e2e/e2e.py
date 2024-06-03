@@ -123,6 +123,29 @@ class TestCLIApp(unittest.TestCase):
         self.assertEqual(exit_code, 0)
         self.assertIn(f"Repo '{reponame}' retrieved successfully", stdout)
 
+    def test_08_vote_repo(self):
+        reponame = "test_repo_name"
+        contributor_id = self.config['creatorInfo']['address']
+        # Get the repo by repo name to retrieve the repo ID
+        command = f"poetry run tsrc-cli repo get {reponame}"
+        stdout, stderr, exit_code = self.run_cli_command(command)
+        self.assertEqual(exit_code, 0)
+        # Extract the repo ID from stdout
+        match = re.search(r"ID: (.+)", stdout)
+        self.assertTrue(match, "Repo ID not found in stdout")
+        repo_id = match.group(1)
+
+        # Simulate a commit ID (replace with actual commit ID if available)
+        commit_id = "abc123"
+
+        # Vote for the repo using the repo ID and commit ID
+        command = f"poetry run tsrc-cli repo vote {repo_id} {commit_id}"
+        stdout, stderr, exit_code = self.run_cli_command(command)
+
+        # Check the exit code and stdout for success
+        self.assertEqual(exit_code, 0)
+        self.assertIn("Vote submitted successfully", stdout)
+
 
 if __name__ == '__main__':
     unittest.main(buffer=False)

@@ -8,6 +8,7 @@ from tsrc_cli.lib.get_user import get_user, parse_get_user_response
 from tsrc_cli.lib.get_user_by_name import get_user_by_name, parse_get_user_by_name_response
 from tsrc_cli.lib.create_repo import parse_create_repo_response
 from tsrc_cli.lib.get_repo import get_repo, parse_get_repo_response  # Import the new functions
+from tsrc_cli.lib.vote_repo import vote_repo, parse_vote_repo_response
 from tsrc_cli.lib.get_tsrcid import get_tsrcid
 from tsrc_cli.lib.get_tsrckey import get_tsrckey
 from tsrc_cli.lib.utilities.tx_utility import AlgorandAccount
@@ -242,6 +243,21 @@ def get_repo_cmd(repo_name, repo_id):
         response = get_repo(repo_name=repo_name)
         print(f"Response from get_repo with repo_name: {response.text}")  # Print the response text
         status, parsed_response = parse_get_repo_response(response)
+
+    if status == 'error':
+        sys.stderr.write(parsed_response + "\n")
+        sys.exit(1)
+    else:
+        print(parsed_response)
+
+@repo.command(name="vote")
+@click.argument('url', required=True)
+@click.argument('commit-id', required=True)
+def vote_repo_cmd(url, commit_id):
+    print(f"vote_repo_cmd called with url: {url}, commit_id: {commit_id}")  # Print the input arguments
+    response = vote_repo(url, commit_id)
+    print(f"Response from vote_repo: {response.text}")  # Print the response text
+    status, parsed_response = parse_vote_repo_response(response)
 
     if status == 'error':
         sys.stderr.write(parsed_response + "\n")
