@@ -134,19 +134,19 @@ class TestCLIApp(unittest.TestCase):
         match = re.search(r"ID: (.+)", stdout)
         self.assertTrue(match, "Repo ID not found in stdout")
         repo_id = match.group(1)
-
+        print(f"Captured repo_id: {repo_id}")  # Print the captured repo_id
+        # Extract the app_id from the repo_id
+        app_id = repo_id.split("-")[-1]
+        print(f"Extracted app_id: {app_id}")  # Print the extracted app_id
         # Simulate a commit ID (replace with actual commit ID if available)
         commit_id = "abc123"
-        app_id = "2872"
-
-        # Vote for the repo using the repo ID and commit ID
+        # Vote for the repo using the repo ID, commit ID, and app_id
         command = f"poetry run tsrc-cli repo vote {repo_id} {commit_id} {app_id}"
         stdout, stderr, exit_code = self.run_cli_command(command)
-
+        print(f"Using app_id: {app_id} in repo vote command")  # Print the app_id used in the command
         # Check the exit code and stdout for success
         self.assertEqual(exit_code, 0)
         self.assertIn("Vote submitted successfully", stdout)
-
 
 if __name__ == '__main__':
     unittest.main(buffer=False)
