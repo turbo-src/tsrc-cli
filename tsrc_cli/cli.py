@@ -13,6 +13,7 @@ from tsrc_cli.lib.get_tsrcid import get_tsrcid
 from tsrc_cli.lib.get_tsrckey import get_tsrckey
 from tsrc_cli.lib.utilities.tx_utility import AlgorandAccount
 from tsrc_cli.lib.blockchain.blockchain import create_repo
+from tsrc_cli.lib.blockchain.blockchain import vote_repo
 from tsrc_cli.lib.utilities.utility import wait_for_confirmation
 import base64
 import msgpack
@@ -112,7 +113,7 @@ def create_repo_cmd(contributor_name, contributor_mnemonic):
 
     # Assuming `signed_txn` is your SignedTransaction object
     #print("Type of signed_txn:", type(signed_txn))
-    
+
     # Convert the signed transaction to a dictionary
     txn_dict = signed_txn.dictify()
     
@@ -135,7 +136,7 @@ def create_repo_cmd(contributor_name, contributor_mnemonic):
     # Encode the signed_txn
     encoded_txn = encoding.msgpack_encode(signed_txn)
     #print("Encoded signed transaction:", encoded_txn)
-    
+
     # Decode the encoded_txn
     decoded_txn = encoding.msgpack_decode(encoded_txn)
     #print("Decoded transaction object:", decoded_txn)
@@ -253,8 +254,58 @@ def get_repo_cmd(repo_name, repo_id):
 @repo.command(name="vote")
 @click.argument('url', required=True)
 @click.argument('commit-id', required=True)
-def vote_repo_cmd(url, commit_id):
-    print(f"vote_repo_cmd called with url: {url}, commit_id: {commit_id}")  # Print the input arguments
+@click.argument('app-id', required=True)
+def vote_repo_cmd(url, commit_id, app_id):
+    import json
+    # Load the configuration file
+    with open('config/config.json', 'r') as file:
+        config = json.load(file)
+
+    # Accessing specific configuration data
+    mnemonic = config['creatorInfo']['mnemonic']
+    algod_token = config['algodToken']
+    algod_address = config['algodAddress']
+    asset_id = config['assetId']
+    client = algod.AlgodClient(algod_token, algod_address)
+
+    commit_id = 'abcd1234'
+
+    #print("Signing the transaction")
+    signed_txn = vote_repo(client, mnemonic, app_id, url, asset_id, commit_id)
+    #print("Transaction signed")
+
+    # Assuming `signed_txn` is your SignedTransaction object
+    #print("Type of signed_txn:", type(signed_txn))
+
+    # Convert the signed transaction to a dictionary
+    txn_dict = signed_txn.dictify()
+
+    # Serialize the transaction dictionary using msgpack
+    serialized_txn = msgpack.packb(txn_dict)
+
+    # Confirm the type to ensure it's bytes
+    print(f"Serialized transaction type: {type(serialized_txn)}")
+
+    # Encode the serialized transaction to base64
+    base64_txn = base64.b64encode(serialized_txn).decode('utf-8')
+
+    # Print the base64 encoded transaction
+    print(f"Base64 encoded transaction: {base64_txn}")
+
+    # Print the signed_txn object
+    print("Signed transaction object:", signed_txn)
+    print("Transaction ID:", signed_txn.transaction.get_txid())
+
+    # Encode the signed_txn
+    encoded_txn = encoding.msgpack_encode(signed_txn)
+    print("Encoded signed transaction:", encoded_txn)
+
+    # Decode the encoded_txn
+    decoded_txn = encoding.msgpack_decode(encoded_txn)
+    print("Decoded transaction object:", decoded_txn)
+    print("Decoded transaction type:", type(decoded_txn))
+
+    # rename this as it conflicts with lib
     response = vote_repo(url, commit_id)
     print(f"Response from vote_repo: {response.text}")  # Print the response text
     status, parsed_response = parse_vote_repo_response(response)

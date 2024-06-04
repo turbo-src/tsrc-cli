@@ -137,9 +137,10 @@ class TestCLIApp(unittest.TestCase):
 
         # Simulate a commit ID (replace with actual commit ID if available)
         commit_id = "abc123"
+        app_id = "2872"
 
         # Vote for the repo using the repo ID and commit ID
-        command = f"poetry run tsrc-cli repo vote {repo_id} {commit_id}"
+        command = f"poetry run tsrc-cli repo vote {repo_id} {commit_id} {app_id}"
         stdout, stderr, exit_code = self.run_cli_command(command)
 
         # Check the exit code and stdout for success

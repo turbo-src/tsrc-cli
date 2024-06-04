@@ -47,6 +47,38 @@ def create_repo(client, account, asset_id, approval_program, clear_program):
 
     return signed_txn
 
+def vote_repo(client, mnemonic, app_id, choice, asset_id, commit_id):
+    asset_id = int(asset_id)
+    print("asset_id", asset_id)
+    private_key = get_private_key_from_mnemonic(mnemonic)
+    print("Using private key:", private_key)
+    sender = account.address_from_private_key(private_key)
+    print("Call from account:", sender)
+
+    #opt_in_app(client, private_key, app_id)
+    params = client.suggested_params()
+
+    # Prepare the application arguments
+    app_args = [
+        b"vote",
+        choice.encode(),
+        commit_id.encode()
+    ]
+
+    # Create the ApplicationCallTxn
+    txn = transaction.ApplicationCallTxn(
+        sender,
+        params,
+        app_id,
+        transaction.OnComplete.NoOpOC.real,
+        app_args=app_args,
+        foreign_assets=[asset_id]
+    )
+
+    signed_txn = txn.sign(private_key)
+
+    return signed_txn
+
 from tsrc_cli.lib.utilities.utility import (
     wait_for_confirmation,
     wait_for_round,
@@ -54,7 +86,11 @@ from tsrc_cli.lib.utilities.utility import (
     intToBytes,
     opt_in_asa,
     opt_in_app,
-    call_app,
+    #call_app,
     read_global_state
+)
+
+from tsrc_cli.lib.utilities.tx_utility import (
+    AlgorandAccount
 )
 
