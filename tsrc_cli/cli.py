@@ -305,16 +305,16 @@ def vote_repo_cmd(url, commit_id, app_id):
     print("Decoded transaction object:", decoded_txn)
     print("Decoded transaction type:", type(decoded_txn))
 
-    # rename this as it conflicts with lib
-    response = vote_repo(url, commit_id)
-    print(f"Response from vote_repo: {response.text}")  # Print the response text
-    status, parsed_response = parse_vote_repo_response(response)
+    ## rename this as it conflicts with lib
+    #response = vote_repo(url, commit_id)
+    #print(f"Response from vote_repo: {response.text}")  # Print the response text
+    #status, parsed_response = parse_vote_repo_response(response)
 
-    if status == 'error':
-        sys.stderr.write(parsed_response + "\n")
-        sys.exit(1)
-    else:
-        print(parsed_response)
+    #if status == 'error':
+    #    sys.stderr.write(parsed_response + "\n")
+    #    sys.exit(1)
+    #else:
+    #    print(parsed_response)
 
 def main():
     cli()

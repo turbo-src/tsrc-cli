@@ -55,7 +55,8 @@ def vote_repo(client, mnemonic, app_id, choice, asset_id, commit_id):
     sender = account.address_from_private_key(private_key)
     print("Call from account:", sender)
 
-    #opt_in_app(client, private_key, app_id)
+    opt_in_app(client, private_key, app_id)
+
     params = client.suggested_params()
 
     # Prepare the application arguments
