@@ -47,13 +47,10 @@ def create_repo(client, account, asset_id, approval_program, clear_program):
 
     return signed_txn
 
-def vote_repo(client, mnemonic, app_id, choice, asset_id, commit_id):
+def vote_repo(client, mnemonic, app_id, url, asset_id, commit_id):
     asset_id = int(asset_id)
-    print("asset_id", asset_id)
     private_key = get_private_key_from_mnemonic(mnemonic)
-    print("Using private key:", private_key)
     sender = account.address_from_private_key(private_key)
-    print("Call from account:", sender)
 
     opt_in_app(client, private_key, app_id)
 
@@ -62,7 +59,7 @@ def vote_repo(client, mnemonic, app_id, choice, asset_id, commit_id):
     # Prepare the application arguments
     app_args = [
         b"vote",
-        choice.encode(),
+        url.encode(),
         commit_id.encode()
     ]
 

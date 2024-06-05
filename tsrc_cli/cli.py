@@ -62,10 +62,10 @@ def get_user_cmd(contributor_name, contributor_id):
         if not contributor_name:
             sys.stderr.write("Error: Contributor name or ID is required.\n")
             sys.exit(1)
-        
+
         response = get_user_by_name(contributor_name)
         status, parsed_response = parse_get_user_by_name_response(response)
-    
+
     if status == 'error':
         sys.stderr.write(parsed_response + "\n")
         sys.exit(1)
@@ -116,16 +116,16 @@ def create_repo_cmd(contributor_name, contributor_mnemonic):
 
     # Convert the signed transaction to a dictionary
     txn_dict = signed_txn.dictify()
-    
+
     # Serialize the transaction dictionary using msgpack
     serialized_txn = msgpack.packb(txn_dict)
-    
+
     # Confirm the type to ensure it's bytes
     #print(f"Serialized transaction type: {type(serialized_txn)}")
-    
+
     # Encode the serialized transaction to base64
     base64_txn = base64.b64encode(serialized_txn).decode('utf-8')
-    
+
     # Print the base64 encoded transaction
     #print(f"Base64 encoded transaction: {base64_txn}")
 
@@ -155,7 +155,7 @@ def create_repo_cmd(contributor_name, contributor_mnemonic):
     #print("  Note:", decoded_txn.transaction.note)
     #print("  Rekey To:", decoded_txn.transaction.rekey_to)
     #print("  Type:", decoded_txn.transaction.type)
-    
+
     #if hasattr(decoded_txn.transaction, 'approval_program'):
     #    print("  Approval Program:", decoded_txn.transaction.approval_program)
     #if hasattr(decoded_txn.transaction, 'clear_state_program'):
@@ -254,8 +254,8 @@ def get_repo_cmd(repo_name, repo_id):
 @repo.command(name="vote")
 @click.argument('url', required=True)
 @click.argument('commit-id', required=True)
-@click.argument('app-id', required=True)
-def vote_repo_cmd(url, commit_id, app_id):
+@click.argument('repo-id', required=True)
+def vote_repo_cmd(url, commit_id, repo_id):
     import json
     # Load the configuration file
     with open('config/config.json', 'r') as file:
@@ -263,12 +263,15 @@ def vote_repo_cmd(url, commit_id, app_id):
 
     # Accessing specific configuration data
     mnemonic = config['creatorInfo']['mnemonic']
+    address = config['creatorInfo']['address']
     algod_token = config['algodToken']
     algod_address = config['algodAddress']
     asset_id = config['assetId']
     client = algod.AlgodClient(algod_token, algod_address)
 
-    commit_id = 'abcd1234'
+    # get from repo_id
+    app_id = repo_id.split("-")[-1]
+    print(f"Extracted app_id: {app_id}")  # Print the extracted app_id
 
     #print("Signing the transaction")
     signed_txn = vote_repo(client, mnemonic, app_id, url, asset_id, commit_id)
@@ -310,49 +313,45 @@ def vote_repo_cmd(url, commit_id, app_id):
     #print(f"Response from vote_repo: {response.text}")  # Print the response text
     #status, parsed_response = parse_vote_repo_response(response)
 
-    #CONFIG = {'url': 'http://localhost:4000/graphql/'}  # Corrected URL
+    CONFIG = {'url': 'http://localhost:4000/graphql/'}  # Corrected URL
 
-    #"""
-    #Makes a POST request to vote for a repo by its URL and commit ID.
+    """
+    Makes a POST request to vote for a repo by its URL and commit ID.
 
-    #Args:
-    #    url (str): The URL of the repo.
-    #    commit_id (str): The commit ID of the repo.
+    Args:
+        url (str): The URL of the repo.
+        commit_id (str): The commit ID of the repo.
 
-    #Returns:
-    #    Dict[str, Any]: The JSON response from the server.
-    #"""
-    #endpoint = CONFIG['url']
+    Returns:
+        Dict[str, Any]: The JSON response from the server.
+    """
+    endpoint = CONFIG['url']
 
-    #query = {
-    #    'query': f'''
-    #    {{
-    #        setVote(
-    #            owner: "test_user_name",
-    #            repo: "test_user_name/test_repo_name",
-    #            defaultHash: "{commit_id}",
-    #            childDefaultHash: "{commit_id}",
-    #            mergeable: true,
-    #            contributor_id: "contributor_id_placeholder",
-    #            side: "side_placeholder",
-    #            token: "token_placeholder"
-    #        )
-    #    }}
-    #    '''
-    #}
+    query = {
+        'query': f'''
+        {{
+            setVote(
+                repoID: "{repo_id}",
+                url: "{url}",
+                commitID: "{commit_id}",
+                contributorID: "{address}",
+                signature: "{signed_txn}",
+            )
+        }}
+        '''
+    }
 
-    #print(f"vote_repo called with url: {url}, commit_id: {commit_id}")  # Print the input arguments
+    print(f"vote_repo called with repo_id: {repo_id}, url: {url}, commit_id: {commit_id}, contributor_id: {address}, signature: {signed_txn}")  # Print the input arguments
 
-    #response = requests.post(endpoint, json=query, headers={'accept': 'json'})
+    response = requests.post(endpoint, json=query, headers={'accept': 'json'})
 
-    #status, parsed_response = parse_vote_repo_response(response)
+    status, parsed_response = parse_vote_repo_response(response)
 
-
-    #if status == 'error':
-    #    sys.stderr.write(parsed_response + "\n")
-    #    sys.exit(1)
-    #else:
-    #    print(parsed_response)
+    if status == 'error':
+        sys.stderr.write(parsed_response + "\n")
+        sys.exit(1)
+    else:
+        print(parsed_response)
 
 def main():
     cli()

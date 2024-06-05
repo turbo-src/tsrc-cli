@@ -139,9 +139,10 @@ class TestCLIApp(unittest.TestCase):
         app_id = repo_id.split("-")[-1]
         print(f"Extracted app_id: {app_id}")  # Print the extracted app_id
         # Simulate a commit ID (replace with actual commit ID if available)
-        commit_id = "abc123"
+        url = "https://github.com/tsrctester1/demo/tree/pullRequest1"
+        commit_id = "dcdaa43d22e488b99ff1b0a86255540ce0449cd7"
         # Vote for the repo using the repo ID, commit ID, and app_id
-        command = f"poetry run tsrc-cli repo vote {repo_id} {commit_id} {app_id}"
+        command = f"poetry run tsrc-cli repo vote {url} {commit_id} {repo_id}"
         stdout, stderr, exit_code = self.run_cli_command(command)
         print(f"Using app_id: {app_id} in repo vote command")  # Print the app_id used in the command
         # Check the exit code and stdout for success
