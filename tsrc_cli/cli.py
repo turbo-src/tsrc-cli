@@ -284,31 +284,69 @@ def vote_repo_cmd(url, commit_id, app_id):
     serialized_txn = msgpack.packb(txn_dict)
 
     # Confirm the type to ensure it's bytes
-    print(f"Serialized transaction type: {type(serialized_txn)}")
+    #print(f"Serialized transaction type: {type(serialized_txn)}")
 
     # Encode the serialized transaction to base64
     base64_txn = base64.b64encode(serialized_txn).decode('utf-8')
 
     # Print the base64 encoded transaction
-    print(f"Base64 encoded transaction: {base64_txn}")
+    #print(f"Base64 encoded transaction: {base64_txn}")
 
     # Print the signed_txn object
-    print("Signed transaction object:", signed_txn)
-    print("Transaction ID:", signed_txn.transaction.get_txid())
+    #print("Signed transaction object:", signed_txn)
+    #print("Transaction ID:", signed_txn.transaction.get_txid())
 
     # Encode the signed_txn
     encoded_txn = encoding.msgpack_encode(signed_txn)
-    print("Encoded signed transaction:", encoded_txn)
+    #print("Encoded signed transaction:", encoded_txn)
 
     # Decode the encoded_txn
     decoded_txn = encoding.msgpack_decode(encoded_txn)
-    print("Decoded transaction object:", decoded_txn)
-    print("Decoded transaction type:", type(decoded_txn))
+    #print("Decoded transaction object:", decoded_txn)
+    #print("Decoded transaction type:", type(decoded_txn))
 
     ## rename this as it conflicts with lib
     #response = vote_repo(url, commit_id)
     #print(f"Response from vote_repo: {response.text}")  # Print the response text
     #status, parsed_response = parse_vote_repo_response(response)
+
+    #CONFIG = {'url': 'http://localhost:4000/graphql/'}  # Corrected URL
+
+    #"""
+    #Makes a POST request to vote for a repo by its URL and commit ID.
+
+    #Args:
+    #    url (str): The URL of the repo.
+    #    commit_id (str): The commit ID of the repo.
+
+    #Returns:
+    #    Dict[str, Any]: The JSON response from the server.
+    #"""
+    #endpoint = CONFIG['url']
+
+    #query = {
+    #    'query': f'''
+    #    {{
+    #        setVote(
+    #            owner: "test_user_name",
+    #            repo: "test_user_name/test_repo_name",
+    #            defaultHash: "{commit_id}",
+    #            childDefaultHash: "{commit_id}",
+    #            mergeable: true,
+    #            contributor_id: "contributor_id_placeholder",
+    #            side: "side_placeholder",
+    #            token: "token_placeholder"
+    #        )
+    #    }}
+    #    '''
+    #}
+
+    #print(f"vote_repo called with url: {url}, commit_id: {commit_id}")  # Print the input arguments
+
+    #response = requests.post(endpoint, json=query, headers={'accept': 'json'})
+
+    #status, parsed_response = parse_vote_repo_response(response)
+
 
     #if status == 'error':
     #    sys.stderr.write(parsed_response + "\n")
