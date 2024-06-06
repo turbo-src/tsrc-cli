@@ -59,7 +59,7 @@ def parse_vote_repo_response(response):
             print(f"Parsed response data: {data}")  # Print the parsed response data
             vote_result = data.get('data', {}).get('setVote')
 
-            if vote_result:
+            if vote_result == '201':
                 return ('success', f"Vote submitted successfully.")
             else:
                 return ('error', "Failed to submit vote.")
