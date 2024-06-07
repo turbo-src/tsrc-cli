@@ -22,7 +22,7 @@ def create_repo(client, account, asset_id, approval_program, clear_program):
     #)
 
     global_ints = 24
-    global_bytes = 11
+    global_bytes = 22
     local_ints = 0
     local_bytes = 0
 

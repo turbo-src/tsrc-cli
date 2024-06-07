@@ -335,13 +335,13 @@ def vote_repo_cmd(url, commit_id, repo_id):
                 url: "{url}",
                 commitID: "{commit_id}",
                 contributorID: "{address}",
-                signature: "{signed_txn}",
+                signature: "{base64_txn}",
             )
         }}
         '''
     }
 
-    print(f"vote_repo called with repo_id: {repo_id}, url: {url}, commit_id: {commit_id}, contributor_id: {address}, signature: {signed_txn}")  # Print the input arguments
+    print(f"vote_repo called with repo_id: {repo_id}, url: {url}, commit_id: {commit_id}, contributor_id: {address}, signature: {base64_txn}")  # Print the input arguments
 
     response = requests.post(endpoint, json=query, headers={'accept': 'json'})
 
